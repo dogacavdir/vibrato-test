@@ -9,6 +9,8 @@ def derivative_peak_percentage(file):   #Input the name of a file
     guessUnvoiced = True
 
     peaknumber = 0
+    length = 0
+    peak_percentage = 0
 
     run_windowing = Windowing(type='hann', zeroPadding=4 * frameSize)  # Hann window with x4 zero padding
     run_spectrum = Spectrum(size=frameSize * 4)
@@ -23,7 +25,9 @@ def derivative_peak_percentage(file):   #Input the name of a file
     run_pitch_contours = PitchContours(hopSize=hopSize)
     run_pitch_contours_melody = PitchContoursMelody(guessUnvoiced=guessUnvoiced,
                                                     hopSize=hopSize)
-    pool = Pool()
+    pool = Pool()   # (Note for Doga) -> Creates a pool for each audio whereas in the other algorithm
+                    # the pool is created for only one time
+
     # Load audio and pass it through the equal-loudness filter
     audio = MonoLoader(filename=file)()
     audio = EqualLoudness()(audio)
