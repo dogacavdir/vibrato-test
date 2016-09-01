@@ -106,7 +106,7 @@ for file in files:
     percentage_vector.append(peak_percentage)
 
     # Calculates the differneces between peaks
-    difference = diff(normalized_derivatives)
+    difference = diff([index for index,value in enumerate(normalized_derivatives) if value != 0 ])
     difference_vector.append(difference)
     # Calculates the mean and max values of the difference array
     mean_vector.append(mean(difference))
@@ -126,7 +126,7 @@ for file in files:
     plt.xlabel('time (s)')
     plt.suptitle('Pitch')
     plt.subplot(212)
-    plt.plot(range(len(difference)),difference)
+    plt.plot(range(len(normalized_derivatives)),normalized_derivatives)
     plt.ylabel('Peaks')
     plt.xlabel('Frame Size')
     plt.suptitle('First Derivative of the Pitch')

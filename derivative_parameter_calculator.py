@@ -2,7 +2,7 @@ from essentia import *
 from essentia.standard import *
 from numpy import *
 
-def derivative_peak_percentage(file):   #Input the name of a file
+def derivative_parameter_calculator(file):   #Input the name of a file
     hopSize = 128
     frameSize = 2048
     sampleRate = 44100
@@ -27,8 +27,7 @@ def derivative_peak_percentage(file):   #Input the name of a file
     run_pitch_contours = PitchContours(hopSize=hopSize)
     run_pitch_contours_melody = PitchContoursMelody(guessUnvoiced=guessUnvoiced,
                                                     hopSize=hopSize)
-    pool = Pool()   # (Note for Doga) -> Creates a pool for each audio whereas in the other algorithm
-                    # the pool is created for only one time
+    pool = Pool()
 
     # Load audio and pass it through the equal-loudness filter
     audio = MonoLoader(filename=file)()
@@ -69,8 +68,17 @@ def derivative_peak_percentage(file):   #Input the name of a file
     length = float(len(normalized_derivatives))
     peak_percentage = (peaknumber/length)*100.0
 
-    return peak_percentage
+    # Calculates the differneces between peaks
+    difference = diff([index for index,value in enumerate(normalized_derivatives) if value != 0 ])
+    # Calculates the mean and max values of the difference array
+    mean_value = mean(difference)
+    max_value = max(difference)
 
+    # Calculate the index of max differences to see if they appear in the end or in the beginning
+    index_max = [loc for loc,val in enumerate(difference) if val == max(difference)]
+    for i in range(len(index_max)):
+        max_loc = (index_max[i]+1)/float(len(difference))
+        max_loc_vector.append(max_loc)
 
-
+    return peak_percentage,mean_value,max_value,max_loc_vector
 
